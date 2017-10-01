@@ -24,6 +24,7 @@ public class TicketServiceImpl implements TicketService {
 	static Logger LOGGER = LoggerFactory.getLogger(TicketServiceImpl.class);
 	public static final String BOOKING_SUCCESS = "Booking Confirmed";
 	public static final String BOOKING_FAILURE = "Reservation Not found to Confirm";
+	public static final String BOOKING_DUPLICATE = "Reservation has already been confirmed";
 	
 	public TicketServiceImpl(VenueConfiguration venuConfig,BookingRepository br) {
 		this.venuConfig = venuConfig;
@@ -61,8 +62,8 @@ public class TicketServiceImpl implements TicketService {
 		if(actualMinLevel.isPresent() && actualMaxLevel.isPresent()) {
 			int min = actualMinLevel.get();
 			int max = actualMaxLevel.get();
-			LOGGER.error("Entered Min Level:"+min+"> Max Level:"+max);
 			if(min > max) {
+				LOGGER.error("Entered Min Level:"+min+"> Max Level:"+max);
 				throw new IllegalArgumentException("Min Level cannot be greater than max level");
 			}
 		}
@@ -118,6 +119,8 @@ public class TicketServiceImpl implements TicketService {
 		Optional<SeatHold> retrieveForReservation = br.retrieveForConfirmation(seatHoldId,customerEmail);
 		if(retrieveForReservation.isPresent() && br.confirmReservation(retrieveForReservation.get())) {
 			return BOOKING_SUCCESS;
+		}else if(br.retrieveBookedSeats(seatHoldId, customerEmail)) {
+			return BOOKING_DUPLICATE;
 		}
 		return BOOKING_FAILURE;
 	}
@@ -156,5 +159,4 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return seatCount;
 	}
-
 }

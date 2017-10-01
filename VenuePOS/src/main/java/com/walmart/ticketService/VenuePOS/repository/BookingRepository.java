@@ -48,7 +48,7 @@ public class BookingRepository {
 	 * @return SeatHold details on the seats being held
 	 */
 	public Optional<SeatHold> retrieveForConfirmation(int seatHoldBookingId, String customerEmail) {
-		return holdingQueue.stream().filter(booking -> booking.getSeatHoldId() == seatHoldBookingId && booking.getCustomerEmail().equals(customerEmail)).findFirst();
+		return holdingQueue.stream().filter(holding -> holding.getSeatHoldId() == seatHoldBookingId && holding.getCustomerEmail().equals(customerEmail)).findFirst();
 	}
 	
 	/**
@@ -64,6 +64,10 @@ public class BookingRepository {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean retrieveBookedSeats(int seatHoldId,String customerEmail){
+		return bookedQueue.stream().anyMatch(booking -> booking.getSeatHoldId() == seatHoldId && booking.getCustomerEmail().equals(customerEmail));
 	}
 	
 	/**
