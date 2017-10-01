@@ -1,10 +1,13 @@
 package com.walmart.ticketService.VenuePOS.model;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Set;
 
 /**
- * Details of Seats that are being held for customer
+ * Details of Seats that are being held for customer.
+ * Reservation time and seats held should not be modifiable
  * @author PB033954
  *
  */
@@ -12,7 +15,7 @@ public class SeatHold {
 
 	private String customerEmail;
 	private Instant reservationTime;
-	private Set<Seat> heldSeats;
+	private final Set<Seat> heldSeats;
 	private int seatHoldId;
 	
 	public SeatHold(String customerEmail, Set<Seat> heldSeats) {
@@ -21,27 +24,23 @@ public class SeatHold {
 		this.heldSeats = heldSeats;
 		this.seatHoldId = this.hashCode();
 		heldSeats.forEach(s -> s.setStatus(Status.HOLD));
-		reservationTime = Instant.now();
+		this.reservationTime = Instant.now();
 	}
 
 	public String getCustomerEmail() {
 		return customerEmail;
 	}
 
-	public void setCustomerEmail(String customerEmail) {
-		this.customerEmail = customerEmail;
+	public void updateCustomerEmail(String newEmailAddress) {
+		this.customerEmail = newEmailAddress;
 	}
 
 	public Instant getReservationTime() {
 		return reservationTime;
 	}
-
-	public void setReservationTime(Instant reservationTime) {
-		this.reservationTime = reservationTime;
-	}
-
+	
 	public Set<Seat> getHeldSeats() {
-		return heldSeats;
+		return Collections.unmodifiableSet(heldSeats);
 	}
 
 	public int getSeatHoldId() {

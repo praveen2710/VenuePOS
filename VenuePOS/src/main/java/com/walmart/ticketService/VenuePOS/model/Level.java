@@ -2,6 +2,7 @@ package com.walmart.ticketService.VenuePOS.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,11 +16,16 @@ public class Level {
 	private String name;
 	private int rows;
 	private int seatsPerRow;
-	private BigDecimal Price;
+	private BigDecimal price;
 	private ArrayList<Seat> seats = new ArrayList<>();
 	
+	/**
+	 * This will return a copy of list of seats related to level.
+	 * Changes made here will not affect the acutual saved list. 
+	 * @return
+	 */
 	public ArrayList<Seat> getSeats() {
-		return seats;
+		return new ArrayList<Seat>(seats);
 	}
 
 	public Level(int levelId, String name, int rows, int seatsPerRow, BigDecimal price) {
@@ -28,7 +34,7 @@ public class Level {
 		this.name = name;
 		this.rows = rows;
 		this.seatsPerRow = seatsPerRow;
-		Price = price;
+		this.price = price;
 		generateSeats();
 	}
 	
@@ -45,7 +51,7 @@ public class Level {
 	}
 	
 	public Optional<Seat> getSeat(int row,int seatNumber) {
-		for(Seat s: seats) {
+		for(Seat s: this.seats) {
 			if(s.getRow() == row && s.getNumber() == seatNumber) {
 				Optional<Seat> seat = Optional.of(s);
 				return seat;
@@ -88,17 +94,17 @@ public class Level {
 	}
 
 	public BigDecimal getPrice() {
-		return Price;
+		return this.price;
 	}
 
 	public void setPrice(BigDecimal price) {
-		Price = price;
+		this.price = price;
 	}
 
 	@Override
 	public String toString() {
 		return "Level [id=" + levelId + ", name=" + name + ", rows=" + rows + ", seatsPerRow=" + seatsPerRow + ", Price="
-				+ Price + "]";
+				+ price + "]";
 	}
 	
 	@Override

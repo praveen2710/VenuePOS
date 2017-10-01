@@ -3,16 +3,24 @@ package com.walmart.ticketService.VenuePOS.model;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class SeatHoldTest {
 	
 	private Set<Seat> mockSeatsHold;
 	private Level l1;
+	
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 	
 	@Before
 	public void setUp() {
@@ -76,5 +84,19 @@ public class SeatHoldTest {
 		}
 		
 	}
-
+	
+	@Test
+	public void testAlterSeatsAfterHolding() {
+		SeatHold s1 = new SeatHold("Test Email", mockSeatsHold);
+		thrown.expect(UnsupportedOperationException.class);
+		s1.getHeldSeats().remove(l1.getSeat(1, 1).get());		
+	}
+	
+	@Test
+	public void testupdateEmailAddressWithCorrectId() {
+		SeatHold s1 = new SeatHold("Test Email", mockSeatsHold);
+		s1.updateCustomerEmail("New Email");
+		assertTrue(s1.getCustomerEmail().equals("New Email"));
+	}
+	
 }

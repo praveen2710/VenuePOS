@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.walmart.ticketService.VenuePOS.model.Level;
 import com.walmart.ticketService.VenuePOS.model.Seat;
@@ -21,6 +23,9 @@ public class BookingRepositoryTest {
 	BookingRepository br;
 	int sizeB4;
 	private static final int EMPTY = 0;
+	
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 	
 	@Before
 	public void setUp() {
@@ -118,6 +123,18 @@ public class BookingRepositoryTest {
 		}
 		br.clearExpiredHoldSeats();
 		assertEquals("HoldingQueueSize should decrease",EMPTY,br.getHoldingQueue().size());
+	}
+	
+	@Test
+	public void testUpdatingHoldQueuesFromGetters() {
+		thrown.expect(UnsupportedOperationException.class);
+		br.getHoldingQueue().add(sh);
+	}
+	
+	@Test
+	public void testUpdatingBookQueuesFromGetters() {
+		thrown.expect(UnsupportedOperationException.class);
+		br.getBookedQueue().add(sh);
 	}
 	
 

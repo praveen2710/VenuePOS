@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +33,13 @@ public class TicketServiceUtilTest {
 		Level l3  = new Level(15,"Balcony 1",15,100,new BigDecimal(50));
 		Level l1  = new Level(37,"Balcony 2",15,100,new BigDecimal(40));
 		
-		HashSet<Level> levels = new HashSet<>();
+		Set<Level> levels = new HashSet<>();
 		levels.add(l1);
 		levels.add(l2);
 		levels.add(l3);
 		levels.add(l4);
 		
-		vc.setLevels(levels);
+		vc.addLevels(levels);
 		int minLevel = TicketServiceUtil.getMinVenueLevel(vc);
 		assertEquals("Min Level In Venue",14,minLevel);
 	}

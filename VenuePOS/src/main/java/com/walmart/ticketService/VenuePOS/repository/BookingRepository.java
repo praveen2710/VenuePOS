@@ -3,6 +3,7 @@ package com.walmart.ticketService.VenuePOS.repository;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -72,21 +73,23 @@ public class BookingRepository {
 	public void clearExpiredHoldSeats() {
 		holdingQueue.removeIf(s -> {
 			Duration d = Duration.between(s.getReservationTime(),Instant.now());
-			LOGGER.debug("clearExpiredHoldSeats" + s.toString());
-			if(d.get(ChronoUnit.SECONDS)>= VenueConfiguration.getVENUERESERVATIONHOLDTIME())
+			
+			if(d.get(ChronoUnit.SECONDS)>= VenueConfiguration.getVENUERESERVATIONHOLDTIME()) {
 				s.getHeldSeats().forEach(seat->seat.setStatus(Status.AVAILABLE));
+				LOGGER.info("clearExpiredHoldSeats:" + s.toString());
+			}
 			return d.get(ChronoUnit.SECONDS)>= VenueConfiguration.getVENUERESERVATIONHOLDTIME();		
 		});
 	}
 	
 	//TODO implement defensive coding
 	public Set<SeatHold> getBookedQueue() {
-		return bookedQueue;
+		return Collections.unmodifiableSet(this.bookedQueue);
 	}
 	
 	//TODO implement defensive coding
 	public Set<SeatHold> getHoldingQueue() {
-		return holdingQueue;
+		return Collections.unmodifiableSet(this.holdingQueue);
 	}
 
 	

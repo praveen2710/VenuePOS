@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.walmart.ticketService.VenuePOS.customexceptions.SeatsNotFoundException;
 import com.walmart.ticketService.VenuePOS.model.Level;
 import com.walmart.ticketService.VenuePOS.model.Seat;
 import com.walmart.ticketService.VenuePOS.model.SeatHold;
@@ -21,6 +22,8 @@ public class TicketServiceImpl implements TicketService {
 	protected VenueConfiguration venuConfig;
 	protected BookingRepository br;
 	static Logger LOGGER = LoggerFactory.getLogger(TicketServiceImpl.class);
+	public static final String BOOKING_SUCCESS = "Booking Confirmed";
+	public static final String BOOKING_FAILURE = "Reservation Not found to Confirm";
 	
 	public TicketServiceImpl(VenueConfiguration venuConfig,BookingRepository br) {
 		this.venuConfig = venuConfig;
@@ -31,9 +34,10 @@ public class TicketServiceImpl implements TicketService {
 	public int numSeatsAvailable(Optional<Integer> venueLevel) {
 		LOGGER.info("numSeatsAvailable availibility request",new String("test"));
 		Optional<Integer> actualVenueLevel = TicketServiceUtil.checkIfNull(venueLevel);
-		if(actualVenueLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualVenueLevel.get(), venuConfig))
+		if(actualVenueLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualVenueLevel.get(), venuConfig)) {
+			LOGGER.error("Invalid level entered:" + venueLevel.get());
 			throw new IllegalArgumentException("The level specified is not valid");
-
+		}
 		br.clearExpiredHoldSeats();
 		return actualVenueLevel.map(level->findAllAvailableLevelCount(level)).orElseGet(()->findAllAvailable());
 	}
@@ -44,15 +48,20 @@ public class TicketServiceImpl implements TicketService {
 		Optional<Integer> actualMinLevel = TicketServiceUtil.checkIfNull(minLevel);
 		Optional<Integer> actualMaxLevel = TicketServiceUtil.checkIfNull(maxLevel);
 		
-		if(actualMinLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualMinLevel.get(), venuConfig))
+		if(actualMinLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualMinLevel.get(), venuConfig)) {
+			LOGGER.error("Entered Min Level:"+actualMinLevel.get());	
 			throw new IllegalArgumentException("Min level is not in range");
+		}
 		
-		if(actualMaxLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualMaxLevel.get(), venuConfig))
+		if(actualMaxLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualMaxLevel.get(), venuConfig)) {
+			LOGGER.error("Entered Max Level:"+actualMaxLevel.get());
 			throw new IllegalArgumentException("Max level is not in range");
+		}
 		
 		if(actualMinLevel.isPresent() && actualMaxLevel.isPresent()) {
 			int min = actualMinLevel.get();
 			int max = actualMaxLevel.get();
+			LOGGER.error("Entered Min Level:"+min+"> Max Level:"+max);
 			if(min > max) {
 				throw new IllegalArgumentException("Min Level cannot be greater than max level");
 			}
@@ -61,7 +70,7 @@ public class TicketServiceImpl implements TicketService {
 		Optional<SeatHold> sh =  doHoldSeats(numSeats,actualMinLevel,actualMaxLevel,customerEmail);
 		br.addToHolding(sh);
 		return sh.orElseThrow(() ->
-        new IllegalArgumentException("Could not hold seats please try at different levels"));
+        new SeatsNotFoundException("Could not hold seats please try at different levels"));
 	}
 
 	private Optional<SeatHold> doHoldSeats(int numSeats, Optional<Integer> actualMinLevel, Optional<Integer> actualMaxLevel,
@@ -108,9 +117,9 @@ public class TicketServiceImpl implements TicketService {
 		br.clearExpiredHoldSeats();
 		Optional<SeatHold> retrieveForReservation = br.retrieveForConfirmation(seatHoldId,customerEmail);
 		if(retrieveForReservation.isPresent() && br.confirmReservation(retrieveForReservation.get())) {
-			return "Booking Confirmed";
+			return BOOKING_SUCCESS;
 		}
-		return "Booking Not Found";
+		return BOOKING_FAILURE;
 	}
 	
 	/**

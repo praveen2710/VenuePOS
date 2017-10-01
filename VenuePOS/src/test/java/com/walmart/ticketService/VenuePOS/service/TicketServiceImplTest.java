@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.walmart.ticketService.VenuePOS.customexceptions.SeatsNotFoundException;
 import com.walmart.ticketService.VenuePOS.model.Level;
 import com.walmart.ticketService.VenuePOS.model.Seat;
 import com.walmart.ticketService.VenuePOS.model.SeatHold;
@@ -145,7 +146,7 @@ public class TicketServiceImplTest {
 	
 	@Test 
 	public void testHoldWhenNotEnoughSeatsInLevels() {
-		thrown.expect(IllegalArgumentException.class);
+		thrown.expect(SeatsNotFoundException.class);
         thrown.expectMessage(startsWith("Could not hold seats"));
 		mockReserveSeats(l1,8);
 		mockReserveSeats(l2,5);
@@ -158,12 +159,37 @@ public class TicketServiceImplTest {
 		}
 	}
 	
+	@Test
+	public void testReserveHoldSeatsValid() {
+		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null, "Test@email.com");
+		String status = tsi.reserveSeats(seatsHeld.getSeatHoldId(), seatsHeld.getCustomerEmail());
+		assertTrue(status.equals(TicketServiceImpl.BOOKING_SUCCESS));
+	}
+	
+	@Test
+	public void testReserveHoldSeatsMistMatchEmailId() {
+		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null, "Test@email.com");
+		String status = tsi.reserveSeats(seatsHeld.getSeatHoldId(),"Alternate@email.com");
+		assertTrue(status.equals(TicketServiceImpl.BOOKING_FAILURE));
+	}
+	
+	@Test
+	public void testReserveHoldSeatsInvalidSeatId() {
+		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null, "Test@email.com");
+		String status = tsi.reserveSeats(1245,seatsHeld.getCustomerEmail());
+		assertTrue(status.equals(TicketServiceImpl.BOOKING_FAILURE));
+	}
+	
+	
+	
 	
 	private void mockReserveSeats(Level l,int noOfSeatsLeft) {
 		for(int i=0;i<l.getSeats().size()-noOfSeatsLeft;i++) {
 			l.getSeats().get(i).setStatus(Status.RESERVED);
 		}		
 	}
+	
+
 	
 	
 	private long getAvilableSeatCountInLevel(int levelId) {

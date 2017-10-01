@@ -22,22 +22,7 @@ import com.walmart.ticketService.VenuePOS.service.TicketServiceImpl;
 @SpringBootApplication
 public class VenuePosApplication {
 
-	public static void main(String[] args) throws InterruptedException {
-		
-//		Level l1  = new Level(1,"Orchestra",25,50,new BigDecimal(100));
-//		Level l2  = new Level(2,"Main",20,100,new BigDecimal(75));
-//		Level l3  = new Level(3,"Balcony 1",15,100,new BigDecimal(50));
-//		Level l4  = new Level(4,"Balcony 2",15,100,new BigDecimal(40));
-//		
-//		HashSet<Level> levels = new HashSet<>();
-//		levels.add(l1);
-//		levels.add(l2);
-//		levels.add(l3);
-//		levels.add(l4);
-//		VenueConfiguration vc = new VenueConfiguration("Chicago Symphony Center",levels);
-//		BookingRepository br = new BookingRepository();
-//		TicketServiceImpl  tsl= new TicketServiceImpl(vc,br);
-				
+	public static void main(String[] args) throws InterruptedException {		
 		SpringApplication.run(VenuePosApplication.class, args);
 	}
 	

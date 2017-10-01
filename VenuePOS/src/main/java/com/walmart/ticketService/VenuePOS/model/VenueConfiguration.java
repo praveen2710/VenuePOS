@@ -1,6 +1,8 @@
 package com.walmart.ticketService.VenuePOS.model;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This defines the details for the venue
@@ -9,14 +11,14 @@ import java.util.HashSet;
  */
 public class VenueConfiguration {
 	private String name;
-	private HashSet<Level> levels = new HashSet<>();
+	private Set<Level> levels;
 	//TODO add logic for for time limit for hold
 	private static int VENUERESERVATIONHOLDTIME=900;
 	
-	public VenueConfiguration(String name, HashSet<Level> levels) {
+	public VenueConfiguration(String name, Set<Level> level) {
 		super();
 		this.name = name;
-		this.levels = levels;
+		this.levels = level;
 	}
 	public String getName() {
 		return name;
@@ -24,11 +26,25 @@ public class VenueConfiguration {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public HashSet<Level> getLevels() {
-		return levels;
+	public Set<Level> getLevels() {
+		return Collections.unmodifiableSet(levels);
 	}
-	public void setLevels(HashSet<Level> levels) {
-		this.levels = levels;
+	
+	public void addLevel(Level level) {
+		//defensive coding in case user has not passed levels initially
+		if(this.levels==null) {
+			this.levels = new HashSet<>();
+		}
+		this.levels.add(level);
+	}
+	
+	public void addLevels(Set<Level> levels) {
+		//defensive coding in case user has not passed levels initially
+		if(this.levels==null) {
+			this.levels = new HashSet<>();
+		}
+		this.levels.addAll(levels);
+		this.levels.forEach(System.out::println);
 	}
 	
 	@Override
@@ -40,9 +56,9 @@ public class VenueConfiguration {
 		return VENUERESERVATIONHOLDTIME;
 	}
 	
-	public static void setVENUERESERVATIONHOLDTIME(int vENUERESERVATIONHOLDTIME) {
-		if(vENUERESERVATIONHOLDTIME>0) {
-		   VENUERESERVATIONHOLDTIME = vENUERESERVATIONHOLDTIME;
+	public static void setVENUERESERVATIONHOLDTIME(int newHoldTime) {
+		if(newHoldTime>0) {
+		   VENUERESERVATIONHOLDTIME = newHoldTime;
 		}
 	}
 	
