@@ -95,6 +95,22 @@ public class BookingRepositoryTest {
 	}
 	
 	@Test
+	public void testRetrieveFromBookedQueueValidIdInvalidEmailId() {
+		br.addToHolding(Optional.of(sh));
+		boolean retrieved = br.retrieveBookedSeats(sh.getSeatHoldId(),"BadEmail@mail");
+		assertFalse(retrieved);
+	}
+	
+	@Test
+	public void testRetrieveFromBookedQueueValidData() {
+		br.addToHolding(Optional.of(sh));
+		Optional<SeatHold> seatsToBook = br.retrieveForConfirmation(sh.getSeatHoldId(), sh.getCustomerEmail());
+		br.confirmReservation(seatsToBook.get());
+		boolean retrieved = br.retrieveBookedSeats(sh.getSeatHoldId(),sh.getCustomerEmail());
+		assertTrue(retrieved);
+	}
+	
+	@Test
 	public void testClearExpiredHoldValid() {
 		br.addToHolding(Optional.of(sh));
 		int sizeBeforeClearingHolds = br.getHoldingQueue().size();

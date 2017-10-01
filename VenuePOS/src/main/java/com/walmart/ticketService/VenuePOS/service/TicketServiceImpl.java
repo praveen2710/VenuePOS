@@ -49,6 +49,11 @@ public class TicketServiceImpl implements TicketService {
 		Optional<Integer> actualMinLevel = TicketServiceUtil.checkIfNull(minLevel);
 		Optional<Integer> actualMaxLevel = TicketServiceUtil.checkIfNull(maxLevel);
 		
+		if(customerEmail == null || customerEmail.isEmpty()) {
+			LOGGER.error("No Customer Email Id was passed In");	
+			throw new IllegalArgumentException("Invalid Email Id");
+		}
+		
 		if(actualMinLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualMinLevel.get(), venuConfig)) {
 			LOGGER.error("Entered Min Level:"+actualMinLevel.get());	
 			throw new IllegalArgumentException("Min level is not in range");
@@ -71,7 +76,7 @@ public class TicketServiceImpl implements TicketService {
 		Optional<SeatHold> sh =  doHoldSeats(numSeats,actualMinLevel,actualMaxLevel,customerEmail);
 		br.addToHolding(sh);
 		return sh.orElseThrow(() ->
-        new SeatsNotFoundException("Could not hold seats please try at different levels"));
+        new SeatsNotFoundException("Could not hold requested amount of seats"));
 	}
 
 	private Optional<SeatHold> doHoldSeats(int numSeats, Optional<Integer> actualMinLevel, Optional<Integer> actualMaxLevel,
@@ -115,6 +120,11 @@ public class TicketServiceImpl implements TicketService {
 	//TODO junits
 	@Override
 	public String reserveSeats(int seatHoldId, String customerEmail) {
+		
+		if(customerEmail == null || customerEmail.isEmpty()) {
+			LOGGER.error("No Customer Email Id was passed In");	
+			throw new IllegalArgumentException("Invalid Email Id");
+		}
 		br.clearExpiredHoldSeats();
 		Optional<SeatHold> retrieveForReservation = br.retrieveForConfirmation(seatHoldId,customerEmail);
 		if(retrieveForReservation.isPresent() && br.confirmReservation(retrieveForReservation.get())) {

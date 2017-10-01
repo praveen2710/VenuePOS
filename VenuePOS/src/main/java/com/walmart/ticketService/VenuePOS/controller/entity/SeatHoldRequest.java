@@ -4,8 +4,8 @@ public class SeatHoldRequest {
 
 	private int numOfSeats;
 	private String customerEmail;
-	private int minLevel;
-	private int maxLevel;
+	private Integer minLevel;
+	private Integer maxLevel;
 	public int getNumOfSeats() {
 		return numOfSeats;
 	}
@@ -18,16 +18,16 @@ public class SeatHoldRequest {
 	public void setCustomerEmail(String customerEmail) {
 		this.customerEmail = customerEmail;
 	}
-	public int getMinLevel() {
+	public Integer getMinLevel() {
 		return minLevel;
 	}
-	public void setMinLevel(int minLevel) {
+	public void setMinLevel(Integer minLevel) {
 		this.minLevel = minLevel;
 	}
-	public int getMaxLevel() {
+	public Integer getMaxLevel() {
 		return maxLevel;
 	}
-	public void setMaxLevel(int maxLevel) {
+	public void setMaxLevel(Integer maxLevel) {
 		this.maxLevel = maxLevel;
 	}
 	

@@ -69,8 +69,8 @@ public class SalesController {
 	public ResponseEntity<SeatHoldReply> holdSeatsIfAvailable(@RequestBody SeatHoldRequest seatHoldRequest) {
 		//TODO exception handling and logging
 		SeatHold se = tsl.findAndHoldSeats(seatHoldRequest.getNumOfSeats()
-									,Optional.of(seatHoldRequest.getMinLevel())
-									,Optional.of(seatHoldRequest.getMaxLevel())
+									,Optional.ofNullable(seatHoldRequest.getMinLevel())
+									,Optional.ofNullable(seatHoldRequest.getMaxLevel())
 									,seatHoldRequest.getCustomerEmail());
 		ResponseEntity<SeatHoldReply> response;
 		if(se!=null) {

@@ -71,6 +71,7 @@ public class TicketServiceImplTest {
 		tsi.numSeatsAvailable(Optional.of(11));
 	}
 	
+
 	@Test
 	public void testResultWhenNoSeatsAvaialble() {
 		l1.getSeats().forEach(s -> s.setStatus(Status.HOLD));
@@ -147,7 +148,7 @@ public class TicketServiceImplTest {
 	@Test 
 	public void testHoldWhenNotEnoughSeatsInLevels() {
 		thrown.expect(SeatsNotFoundException.class);
-        thrown.expectMessage(startsWith("Could not hold seats"));
+        thrown.expectMessage(startsWith("Could not hold"));
 		mockReserveSeats(l1,8);
 		mockReserveSeats(l2,5);
 		mockReserveSeats(l3,9);
@@ -167,6 +168,15 @@ public class TicketServiceImplTest {
 	}
 	
 	@Test
+	public void testReserveHoldSeatsNullEmail() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(startsWith("Invalid Email Id"));
+		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null,null);
+		tsi.reserveSeats(seatsHeld.getSeatHoldId(), seatsHeld.getCustomerEmail());
+		
+	}
+	
+	@Test
 	public void testReserveHoldSeatsMistMatchEmailId() {
 		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null, "Test@email.com");
 		String status = tsi.reserveSeats(seatsHeld.getSeatHoldId(),"Alternate@email.com");
@@ -180,17 +190,19 @@ public class TicketServiceImplTest {
 		assertTrue(status.equals(TicketServiceImpl.BOOKING_FAILURE));
 	}
 	
-	
-	
+	@Test
+	public void testReserveHoldSeatsNullEmailId() {
+		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null,"Test@email.com");
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(startsWith("Invalid Email Id"));
+		tsi.reserveSeats(seatsHeld.getSeatHoldId(),null);
+	}
 	
 	private void mockReserveSeats(Level l,int noOfSeatsLeft) {
 		for(int i=0;i<l.getSeats().size()-noOfSeatsLeft;i++) {
 			l.getSeats().get(i).setStatus(Status.RESERVED);
 		}		
 	}
-	
-
-	
 	
 	private long getAvilableSeatCountInLevel(int levelId) {
 		List<Level> getSpecificLevel = vc.getLevels().stream().filter(level -> level.getLevelId() == levelId).collect(Collectors.toList());
