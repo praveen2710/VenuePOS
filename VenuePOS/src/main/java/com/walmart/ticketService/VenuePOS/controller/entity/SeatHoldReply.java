@@ -4,6 +4,11 @@ import java.util.Set;
 
 import com.walmart.ticketService.VenuePOS.model.Seat;
 
+/**
+ * This contains the bookingId and {@link SeatDetails}
+ * @author PB033954
+ *
+ */
 public class SeatHoldReply {
 	
 	private long bookingId;

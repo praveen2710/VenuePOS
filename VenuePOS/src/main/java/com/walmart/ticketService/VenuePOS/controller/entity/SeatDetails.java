@@ -2,6 +2,11 @@ package com.walmart.ticketService.VenuePOS.controller.entity;
 
 import java.math.BigDecimal;
 
+/**
+ * Details required to send the user about his reserved seats
+ * @author PB033954
+ *
+ */
 public class SeatDetails {
 	private int seatRow;
 	private int seatNumber;

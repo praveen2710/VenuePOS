@@ -29,6 +29,7 @@ import com.walmart.ticketService.VenuePOS.service.TicketServiceImpl;
 public class SalesController {
 	
 	private TicketServiceImpl tsl;
+	private VenueConfiguration vc;
 	
 	public SalesController() {
 		Level l1  = new Level(1,"Orchestra",25,50,new BigDecimal(100));
@@ -41,26 +42,44 @@ public class SalesController {
 		levels.add(l2);
 		levels.add(l3);
 		levels.add(l4);
- 		VenueConfiguration vc = new VenueConfiguration("Chicago Symphony Center",levels);
+ 		vc = new VenueConfiguration("Chicago Symphony Center",levels);
 		BookingRepository br = new BookingRepository();
 		tsl= new TicketServiceImpl(vc,br);
 	}
 	
-	@RequestMapping(value = "home", method = RequestMethod.GET)
-	public String testHomePage() {
-		return "Home sweet home";
+	/**
+	 * Welcome page
+	 * @return
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String homePage() {
+		return "Welcome to "+vc.getName()+" Booking System";
 	}
-	
+		
+	/**
+	 * This will calculate the empty seats in the complete venue
+	 * @return count of empty seats
+	 */
 	@RequestMapping(value = "emptySeats", method = RequestMethod.GET)
 	public int listAvailableSeats() {
 		return tsl.numSeatsAvailable(null);
 	}
 	
+	/**
+	 * This will calculate the the count of empty seats at a particular level
+	 * @param levelId
+	 * @return count of empty seats
+	 */
 	@RequestMapping(value = "emptySeats/{levelId}", method = RequestMethod.GET)
 	public int listAvailableSeatsInLevel(@PathVariable Optional<Integer> levelId) {
 		return tsl.numSeatsAvailable(levelId);
 	}
 	
+	/**
+	 * This will take care of putting seats on hold for customer
+	 * @param seatHoldRequest
+	 * @return
+	 */
 	@RequestMapping(value = "seats/hold", method = RequestMethod.POST)
 	public ResponseEntity<SeatHoldReply> holdSeatsIfAvailable(@RequestBody SeatHoldRequest seatHoldRequest) {
 		SeatHold se = tsl.findAndHoldSeats(seatHoldRequest.getNumOfSeats()
@@ -80,6 +99,11 @@ public class SalesController {
 		return response;
 	}
 	
+	/**
+	 * This will handle reservation of the seats that are being held for customer
+	 * @param seatBookingRequest
+	 * @return
+	 */
 	@RequestMapping(value = "seats/reserve", method = RequestMethod.POST)
 	public ResponseEntity<String> confirmHeldSeatsIfValid(@RequestBody SeatBookingRequest seatBookingRequest) {		String bookingReply = tsl.reserveSeats(seatBookingRequest.getBookingId(), seatBookingRequest.getCustomerEmail());
 		ResponseEntity<String> response; 
@@ -89,7 +113,7 @@ public class SalesController {
 		}else if(bookingReply.equals(TicketServiceImpl.BOOKING_DUPLICATE)) {
 			response =  new ResponseEntity<>("Booking has been reserved already",HttpStatus.OK);
 		}else {
-			response = new ResponseEntity<>("Booking could not be found to confirm",HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<>("Booking could not be found to reserve",HttpStatus.NOT_FOUND);
 		}
 		return response;
 	}	

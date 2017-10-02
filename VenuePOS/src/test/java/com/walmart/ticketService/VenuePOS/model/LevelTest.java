@@ -18,7 +18,7 @@ public class LevelTest {
 
 	@Test
 	public void testRowCountInLevel() {
-		 assertEquals("Seat Count as expected",50*50, l1.getSeats().size());
+		 assertEquals("Seat Count expected",50*50, l1.getSeats().size());
 	}
 	
 	@Test

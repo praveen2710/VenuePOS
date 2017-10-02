@@ -25,14 +25,14 @@ public class SeatTest {
 	public void testDuplicateSeat() {
 		Seat s1 = new Seat(l1, 10, 50);
 		Seat s2 = new Seat(l1, 10, 50);
-		assertEquals("Validating that 2 seats are identical",s1, s2);
+		assertEquals("Both seats should be identical",s1, s2);
 	}
 	
 	@Test
 	public void testSameSeatDiffLevels() {
 		Seat s1 = new Seat(l1, 10, 50);
 		Seat s2 = new Seat(l2, 10, 50);
-		assertNotEquals("Validating that 2 seats are not identical on different levels",s1, s2);
+		assertNotEquals("2 Seats on diff level should be unique",s1, s2);
 	}
 	
 	@Test

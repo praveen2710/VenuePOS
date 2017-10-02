@@ -1,5 +1,11 @@
 package com.walmart.ticketService.VenuePOS.customexceptions;
 
+/**
+ * This exception will be thrown when the system cannot put hold on requested
+ * no of seats by customer
+ * @author PB033954
+ *
+ */
 public class SeatsNotFoundException extends RuntimeException
 {
 

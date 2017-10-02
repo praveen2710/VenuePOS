@@ -1,5 +1,10 @@
 package com.walmart.ticketService.VenuePOS.controller.entity;
 
+/**
+ * This maps to user's request to make a hold on the seats
+ * @author PB033954
+ *
+ */
 public class SeatHoldRequest {
 
 	private int numOfSeats;

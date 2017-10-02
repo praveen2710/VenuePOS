@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,6 @@ public class TicketServiceImpl implements TicketService {
 
 	@Override
 	public int numSeatsAvailable(Optional<Integer> venueLevel) {
-		LOGGER.info("numSeatsAvailable availibility request",new String("test"));
 		Optional<Integer> actualVenueLevel = TicketServiceUtil.checkIfNull(venueLevel);
 		if(actualVenueLevel.isPresent() && !TicketServiceUtil.checkVenueLevel(actualVenueLevel.get(), venuConfig)) {
 			LOGGER.error("Invalid level entered:" + venueLevel.get());
@@ -140,7 +140,7 @@ public class TicketServiceImpl implements TicketService {
 		Optional<SeatHold> retrieveForReservation = br.retrieveForConfirmation(bookingId,customerEmail);
 		if(retrieveForReservation.isPresent() && br.confirmReservation(retrieveForReservation.get())) {
 			return BOOKING_SUCCESS;
-		}else if(br.retrieveBookedSeats(bookingId, customerEmail)) {
+		}else if(br.retrieveReservedSeats(bookingId, customerEmail)) {
 			return BOOKING_DUPLICATE;
 		}
 		return BOOKING_FAILURE;

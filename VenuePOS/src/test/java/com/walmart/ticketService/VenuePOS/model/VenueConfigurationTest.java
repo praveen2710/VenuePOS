@@ -63,7 +63,7 @@ public class VenueConfigurationTest {
 		vc = new VenueConfiguration("Test Venue", null); 
 		Level l2 = new Level(2,"testMain",1,10,new BigDecimal(10));
 		vc.addLevel(l2);
-		assertEquals("New Levels are to be added",1,vc.getLevels().size());
+		assertEquals("New Level is to be added",1,vc.getLevels().size());
 		
 	}
 

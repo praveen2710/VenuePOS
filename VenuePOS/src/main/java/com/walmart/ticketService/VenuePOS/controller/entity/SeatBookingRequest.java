@@ -1,5 +1,10 @@
 package com.walmart.ticketService.VenuePOS.controller.entity;
 
+/**
+ * Request containing the details for the hold to reserve
+ * @author PB033954
+ *
+ */
 public class SeatBookingRequest {
 	private int bookingId;
 	private String customerEmail;

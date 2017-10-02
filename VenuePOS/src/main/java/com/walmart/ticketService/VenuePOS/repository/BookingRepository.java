@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.walmart.ticketService.VenuePOS.model.SeatHold;
 import com.walmart.ticketService.VenuePOS.model.Status;
 import com.walmart.ticketService.VenuePOS.model.VenueConfiguration;
-import com.walmart.ticketService.VenuePOS.service.TicketServiceImpl;
-
 /**
  * This will hold the information about which seats are being held and are reserved for customer's
  * @author PB033954
@@ -24,17 +22,17 @@ import com.walmart.ticketService.VenuePOS.service.TicketServiceImpl;
 public class BookingRepository {
 
 	private Set<SeatHold> holdingQueue;
-	private Set<SeatHold> bookedQueue;
+	private Set<SeatHold> reservedQueue;
 	
 	static Logger LOGGER = LoggerFactory.getLogger(BookingRepository.class);
 
 	public BookingRepository() {
 		holdingQueue = new HashSet<>();
-		bookedQueue = new HashSet<>();
+		reservedQueue = new HashSet<>();
 	}
 	
 	/**
-	 * This will put the seats held for later to be booked
+	 * This will put the seats held for later to be reserved
 	 * @param sh : {@link SeatHold} seats to hold for customer
 	 */
 	public void addToHolding(Optional<SeatHold> sh) {
@@ -60,18 +58,24 @@ public class BookingRepository {
 		if(holdingQueue.contains(booking)) {
 			booking.getHeldSeats().forEach(s-> s.setStatus(Status.RESERVED));
 			holdingQueue.remove(booking);
-			bookedQueue.add(booking);		
+			reservedQueue.add(booking);		
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean retrieveBookedSeats(int seatHoldId,String customerEmail){
-		return bookedQueue.stream().anyMatch(booking -> booking.getSeatHoldId() == seatHoldId && booking.getCustomerEmail().equals(customerEmail));
+	/**
+	 * This will verify if the request has been already confirmed
+	 * @param seatHoldId
+	 * @param customerEmail
+	 * @return
+	 */
+	public boolean retrieveReservedSeats(int seatHoldId,String customerEmail){
+		return reservedQueue.stream().anyMatch(booking -> booking.getSeatHoldId() == seatHoldId && booking.getCustomerEmail().equals(customerEmail));
 	}
 	
 	/**
-	 * This method will clear out holds on seats if there have been booked over 
+	 * This method will clear out holds on seats if there have been reserved over 
 	 * hold time configured for venue in {@link VenueConfiguration}
 	 */
 	public void clearExpiredHoldSeats() {
@@ -86,10 +90,18 @@ public class BookingRepository {
 		});
 	}
 	
-	public Set<SeatHold> getBookedQueue() {
-		return Collections.unmodifiableSet(this.bookedQueue);
+	/**
+	 * This will return an unmodifiable list of reserved seats
+	 * @return
+	 */
+	public Set<SeatHold> getReservedQueue() {
+		return Collections.unmodifiableSet(this.reservedQueue);
 	}
-	
+
+	/**
+	 * This will return an unmodifiable list of seats in hold
+	 * @return
+	 */
 	public Set<SeatHold> getHoldingQueue() {
 		return Collections.unmodifiableSet(this.holdingQueue);
 	}

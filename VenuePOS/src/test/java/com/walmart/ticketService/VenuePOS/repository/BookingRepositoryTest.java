@@ -47,13 +47,13 @@ public class BookingRepositoryTest {
 	@Test
 	public void testAddSeatOnHoldValid() {
 		br.addToHolding(Optional.of(sh));
-		assertEquals("HoldingQueueSize Increased",++sizeB4,br.getHoldingQueue().size());
+		assertEquals("HoldingQueueSize should increased",++sizeB4,br.getHoldingQueue().size());
 	}
 		
 	@Test 
 	public void testAddSeatOnHoldEmpty() {
 		br.addToHolding(Optional.empty());
-		assertEquals("HoldingQueueSize Same",sizeB4,br.getHoldingQueue().size());
+		assertEquals("HoldingQueueSize should remain same",sizeB4,br.getHoldingQueue().size());
 	}
 	
 	@Test
@@ -81,11 +81,11 @@ public class BookingRepositoryTest {
 	@Test
 	public void testConfirmReservationValid() {
 		br.addToHolding(Optional.of(sh));
-		int sizeBeforeBooking = br.getBookedQueue().size();
+		int sizeBeforeBooking = br.getReservedQueue().size();
 		Optional<SeatHold> retrieved = br.retrieveForConfirmation(sh.getSeatHoldId(),sh.getCustomerEmail());
 		boolean isConfirmed = br.confirmReservation(retrieved.get());
 		assertTrue(isConfirmed);
-		assertEquals("Booking Confirmed should be incremented by 1",++sizeBeforeBooking,br.getBookedQueue().size());
+		assertEquals("Reservation Confirmed should be incremented by 1",++sizeBeforeBooking,br.getReservedQueue().size());
 	}
 	
 	@Test
@@ -97,7 +97,7 @@ public class BookingRepositoryTest {
 	@Test
 	public void testRetrieveFromBookedQueueValidIdInvalidEmailId() {
 		br.addToHolding(Optional.of(sh));
-		boolean retrieved = br.retrieveBookedSeats(sh.getSeatHoldId(),"BadEmail@mail");
+		boolean retrieved = br.retrieveReservedSeats(sh.getSeatHoldId(),"BadEmail@mail");
 		assertFalse(retrieved);
 	}
 	
@@ -106,7 +106,7 @@ public class BookingRepositoryTest {
 		br.addToHolding(Optional.of(sh));
 		Optional<SeatHold> seatsToBook = br.retrieveForConfirmation(sh.getSeatHoldId(), sh.getCustomerEmail());
 		br.confirmReservation(seatsToBook.get());
-		boolean retrieved = br.retrieveBookedSeats(sh.getSeatHoldId(),sh.getCustomerEmail());
+		boolean retrieved = br.retrieveReservedSeats(sh.getSeatHoldId(),sh.getCustomerEmail());
 		assertTrue(retrieved);
 	}
 	
@@ -136,7 +136,7 @@ public class BookingRepositoryTest {
 			e.printStackTrace();
 		}
 		br.clearExpiredHoldSeats();
-		assertEquals("HoldingQueueSize should decrease",EMPTY,br.getHoldingQueue().size());
+		assertEquals("HoldingQueueSize should be empty",EMPTY,br.getHoldingQueue().size());
 	}
 	
 	@Test
@@ -148,7 +148,7 @@ public class BookingRepositoryTest {
 	@Test
 	public void testUpdatingBookQueuesFromGetters() {
 		thrown.expect(UnsupportedOperationException.class);
-		br.getBookedQueue().add(sh);
+		br.getReservedQueue().add(sh);
 	}
 	
 

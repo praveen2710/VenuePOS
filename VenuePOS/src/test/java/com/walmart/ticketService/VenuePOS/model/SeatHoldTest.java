@@ -49,7 +49,7 @@ public class SeatHoldTest {
 		seatHoldSet.add(s1);
 		seatHoldSet.add(s2);
 		
-		assertEquals("Size of Set is of Unique Seat Holds only",1,seatHoldSet.size());	
+		assertEquals("Size of Set should be of unique holds only",1,seatHoldSet.size());	
 
 	}
 	
@@ -70,7 +70,7 @@ public class SeatHoldTest {
 		seatHoldSet.add(s1);
 		seatHoldSet.add(s3);
 		
-		assertEquals("Size of Set is of Unique Even if seats are added in diff order",1,seatHoldSet.size());	
+		assertEquals("Size of Set should be of unique holds only even if insertion order is different",1,seatHoldSet.size());	
 	}
 	
 	@Test
@@ -80,7 +80,7 @@ public class SeatHoldTest {
 		}
 		SeatHold s1 = new SeatHold("Test Email", mockSeatsHold);
 		for(Seat seatAfterHold:s1.getHeldSeats()) {
-			assertEquals("Seat should be available",Status.HOLD,seatAfterHold.getStatus());
+			assertEquals("Seat should be on hold",Status.HOLD,seatAfterHold.getStatus());
 		}
 		
 	}

@@ -43,7 +43,6 @@ public class VenueConfiguration {
 			this.levels = new HashSet<>();
 		}
 		this.levels.addAll(levels);
-		this.levels.forEach(System.out::println);
 	}
 	
 	@Override

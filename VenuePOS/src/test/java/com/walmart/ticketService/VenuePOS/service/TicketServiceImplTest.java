@@ -92,7 +92,7 @@ public class TicketServiceImplTest {
 		assertEquals("No Of Seats Held",10,seatsHeld.getHeldSeats().size());
 		//Ensure all seats are on same level
 		for(Seat seat:seatsHeld.getHeldSeats()) {
-			assertEquals("All Seats are not in same level",TicketServiceUtil.getMinVenueLevel(vc),seat.getLevel().getLevelId());
+			assertEquals("All Seats are to be in same level",TicketServiceUtil.getMinVenueLevel(vc),seat.getLevel().getLevelId());
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class TicketServiceImplTest {
 		assertEquals("No Of Seats Held",10,seatsHeld.getHeldSeats().size());
 		//all seats must be in level 2
 		for(Seat seat:seatsHeld.getHeldSeats()) {
-			assertEquals("All Seats are not in same level",2,seat.getLevel().getLevelId());
+			assertEquals("All Seats are to be in same level",2,seat.getLevel().getLevelId());
 		}
 	}
 	
