@@ -12,7 +12,6 @@ import java.util.Set;
 public class VenueConfiguration {
 	private String name;
 	private Set<Level> levels;
-	//TODO add logic for for time limit for hold
 	private static int VENUERESERVATIONHOLDTIME=900;
 	
 	public VenueConfiguration(String name, Set<Level> level) {

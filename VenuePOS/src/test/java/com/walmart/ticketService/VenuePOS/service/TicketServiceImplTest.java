@@ -198,6 +198,14 @@ public class TicketServiceImplTest {
 		tsi.reserveSeats(seatsHeld.getSeatHoldId(),null);
 	}
 	
+	@Test
+	public void testReserveHoldSeatsDuplicateCall() {
+		SeatHold seatsHeld = tsi.findAndHoldSeats(18,null,null,"Test@email.com");
+		tsi.reserveSeats(seatsHeld.getSeatHoldId(),seatsHeld.getCustomerEmail());
+		String duplicateCall = tsi.reserveSeats(seatsHeld.getSeatHoldId(),seatsHeld.getCustomerEmail());
+		assertTrue(duplicateCall.equals(TicketServiceImpl.BOOKING_DUPLICATE));
+	}
+	
 	private void mockReserveSeats(Level l,int noOfSeatsLeft) {
 		for(int i=0;i<l.getSeats().size()-noOfSeatsLeft;i++) {
 			l.getSeats().get(i).setStatus(Status.RESERVED);

@@ -86,12 +86,10 @@ public class BookingRepository {
 		});
 	}
 	
-	//TODO implement defensive coding
 	public Set<SeatHold> getBookedQueue() {
 		return Collections.unmodifiableSet(this.bookedQueue);
 	}
 	
-	//TODO implement defensive coding
 	public Set<SeatHold> getHoldingQueue() {
 		return Collections.unmodifiableSet(this.holdingQueue);
 	}

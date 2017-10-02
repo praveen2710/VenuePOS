@@ -85,7 +85,6 @@ public class Level {
 	}
 
 	public int getSeatsPerRow() {
-		//TODO this is an issue since getter can be used to set data fix later
 		return seatsPerRow;
 	}
 

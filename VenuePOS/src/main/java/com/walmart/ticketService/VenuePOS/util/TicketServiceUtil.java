@@ -24,7 +24,6 @@ public class TicketServiceUtil {
 	 * @return the least level in the venue
 	 */
 	public static int getMinVenueLevel(VenueConfiguration venuConfig) {
-		//TODO what happens when this is null or levels is null?
 		Optional<Integer> minLevel = venuConfig.getLevels().stream().map(s-> s.getLevelId()).min(Integer::compare);
 		return minLevel.orElse(-1);
 

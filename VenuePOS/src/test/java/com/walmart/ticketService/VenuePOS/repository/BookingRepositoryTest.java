@@ -119,7 +119,6 @@ public class BookingRepositoryTest {
 		try {
 			Thread.sleep(VenueConfiguration.getVENUERESERVATIONHOLDTIME()*1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		br.clearExpiredHoldSeats();
@@ -134,7 +133,6 @@ public class BookingRepositoryTest {
 		try {
 			Thread.sleep(VenueConfiguration.getVENUERESERVATIONHOLDTIME()*1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		br.clearExpiredHoldSeats();

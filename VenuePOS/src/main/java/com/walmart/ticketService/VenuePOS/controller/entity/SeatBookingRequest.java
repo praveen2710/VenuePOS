@@ -1,15 +1,15 @@
 package com.walmart.ticketService.VenuePOS.controller.entity;
 
 public class SeatBookingRequest {
-	private int seatHoldId;
+	private int bookingId;
 	private String customerEmail;
 		
-	public int getSeatHoldId() {
-		return seatHoldId;
+	public int getBookingId() {
+		return bookingId;
 	}
 
-	public void setSeatHoldId(int seatHoldId) {
-		this.seatHoldId = seatHoldId;
+	public void setBookingId(int bookingId) {
+		this.bookingId = bookingId;
 	}
 
 	public String getCustomerEmail() {
@@ -22,7 +22,7 @@ public class SeatBookingRequest {
 
 	@Override
 	public String toString() {
-		return "SeatBookingRequest [seatHoldId=" + seatHoldId + ", customerEmail=" + customerEmail + "]";
+		return "SeatBookingRequest [bookingId=" + bookingId + ", customerEmail=" + customerEmail + "]";
 	}
 	
 	

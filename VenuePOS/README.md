@@ -2,16 +2,105 @@
 This app will facilitate the process of booking seats at a venue.
 
 ## Services Implemented
-* URL HERE
-To retrieve no of seats currently available in venue . Optionally this can be used to search for seats at a specific level 
-* URL HERE
+### http://localhost:8090/api/v1/emptySeat/{level_id}
+To retrieve no of seats currently available in venue .  This can be used to search for seats at a specific level 
+* Request Type : Get
+* Parameters : 
+
+		level_id (Optional)
+
+	This will get you available seats in a specific level if it is valid
+
+* Return
+
+		An integer indication no of empty seats
+
+* Exceptions
+
+	* When a level not present in venue is passed
+	
+### http://localhost:8090/api/v1/seats/hold
+
 This will hold the best seats in a level for no of seats requested by customer.
 The customer can optionally range of levels where he wants booking.If none provided it will default from closest to farthest away.
 If there are not enough seats in a level to fulfill requirements and given option the system will look for sets in next level.
-* URL HERE
-A customer can provide the holdId and also the email address to confirm the reservation of seats held by using above URL
 
-### Implementation Details Required 
+* Request Type : POST
+* Parameters : 
+
+		numOfSeats(required)
+		
+		minLevel(Optional): Will look for seats from specified level
+		
+		maxLevel(Optional): Will look for seats till specified level
+		
+		customerEmail(required)
+
+```
+{
+	"numOfSeats":"1",
+	"minLevel":"1",
+	"maxLevel":"4",
+	"customerEmail":"Postman@email.com"
+}
+```
+
+* Return
+
+	A Json with Id and details of held seats held
+
+```
+{
+    "bookingId": 30784,
+    "heldSeats": [
+        {
+            "seatRow": 1,
+            "seatNumber": 1,
+            "priceOfSeat": 100,
+            "level": "Orchestra"
+        }
+    ]
+}
+```
+
+* Exceptions
+	* When no of seats requested are <=0
+	* When min or max level is not present in venue
+	* When an email Id is not passed in
+	* When requested seats are greater than any available in (Optionally in the given range if set)
+
+### http://localhost:8090/api/v1/seats/reserve
+A customer needs to provide the bookingId and also the email address to confirm the reservation of previous booked seats.
+
+* Request Type : POST
+* Parameters : 
+
+		seatHoldId(required): The Id provided when booking seats
+		
+		customerEmail(required):
+```
+{
+	"bookingId":"351085",
+	"customerEmail":"Postman@email.com"
+}
+```
+
+	* Return
+
+		String Indicating one of the three things
+		
+		* Booking Confirmed: The bookingId and email were a match and the booking is now confirmed
+		
+		* Booking could not be found to confirm : This indicates that either Id and email were not a match or your reservation has expired
+		
+		* Booking has been reserved already: This indicates that a confirmation request was made earlier and has been processed.
+
+* Exceptions
+
+	* When the booking Id is <=0
+	* When an email Id is not passed in
+
+## Implementation Details Required 
 * Using Java 8 concepts like Optional,Stream,Instant to satisfy the needs
 * The seat score mechanism is fairly simple as of now and cannot handle the venue adding/removing custom seats. 
 * Need to implement a good way to score seats in a level

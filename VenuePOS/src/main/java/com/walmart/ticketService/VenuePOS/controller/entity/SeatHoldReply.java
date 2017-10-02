@@ -6,17 +6,17 @@ import com.walmart.ticketService.VenuePOS.model.Seat;
 
 public class SeatHoldReply {
 	
-	private long seatHoldId;
+	private long bookingId;
 	private final Set<SeatDetails> heldSeats;
 	
-	public SeatHoldReply(long seatHoldId, Set<SeatDetails> heldSeats) {
+	public SeatHoldReply(long bookingId, Set<SeatDetails> heldSeats) {
 		super();
-		this.seatHoldId = seatHoldId;
+		this.bookingId = bookingId;
 		this.heldSeats = heldSeats;
 	}
 	
-	public long getSeatHoldId() {
-		return seatHoldId;
+	public long getBookingId() {
+		return bookingId;
 	}
 
 	public Set<SeatDetails> getHeldSeats() {
@@ -25,7 +25,7 @@ public class SeatHoldReply {
 
 	@Override
 	public String toString() {
-		return "SeatHoldReply [seatHoldId=" + seatHoldId + ", heldSeats=" + heldSeats + "]";
+		return "SeatHoldReply [bookingId=" + bookingId + ", heldSeats=" + heldSeats + "]";
 	}
 	
 	

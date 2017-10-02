@@ -23,8 +23,8 @@ public class TicketServiceImpl implements TicketService {
 	protected BookingRepository br;
 	static Logger LOGGER = LoggerFactory.getLogger(TicketServiceImpl.class);
 	public static final String BOOKING_SUCCESS = "Booking Confirmed";
-	public static final String BOOKING_FAILURE = "Reservation Not found to Confirm";
-	public static final String BOOKING_DUPLICATE = "Reservation has already been confirmed";
+	public static final String BOOKING_FAILURE = "Booking Not found to Confirm";
+	public static final String BOOKING_DUPLICATE = "Reservation has already been confirmed for this booking";
 	
 	public TicketServiceImpl(VenueConfiguration venuConfig,BookingRepository br) {
 		this.venuConfig = venuConfig;
@@ -48,6 +48,11 @@ public class TicketServiceImpl implements TicketService {
 			String customerEmail) {
 		Optional<Integer> actualMinLevel = TicketServiceUtil.checkIfNull(minLevel);
 		Optional<Integer> actualMaxLevel = TicketServiceUtil.checkIfNull(maxLevel);
+		
+		if(numSeats <= 0) {
+			LOGGER.error("Invalid no of seats requested");	
+			throw new IllegalArgumentException("Invalid no of seats requested");
+		}
 		
 		if(customerEmail == null || customerEmail.isEmpty()) {
 			LOGGER.error("No Customer Email Id was passed In");	
@@ -117,19 +122,25 @@ public class TicketServiceImpl implements TicketService {
 		
 	}
 
-	//TODO junits
 	@Override
-	public String reserveSeats(int seatHoldId, String customerEmail) {
+	public String reserveSeats(int bookingId, String customerEmail) {
 		
 		if(customerEmail == null || customerEmail.isEmpty()) {
 			LOGGER.error("No Customer Email Id was passed In");	
 			throw new IllegalArgumentException("Invalid Email Id");
 		}
+		
+		if(bookingId <=0) {
+			LOGGER.error("bookingId passed in is invalid");	
+			throw new IllegalArgumentException("Invalid booking Id");
+		}
+		
+		
 		br.clearExpiredHoldSeats();
-		Optional<SeatHold> retrieveForReservation = br.retrieveForConfirmation(seatHoldId,customerEmail);
+		Optional<SeatHold> retrieveForReservation = br.retrieveForConfirmation(bookingId,customerEmail);
 		if(retrieveForReservation.isPresent() && br.confirmReservation(retrieveForReservation.get())) {
 			return BOOKING_SUCCESS;
-		}else if(br.retrieveBookedSeats(seatHoldId, customerEmail)) {
+		}else if(br.retrieveBookedSeats(bookingId, customerEmail)) {
 			return BOOKING_DUPLICATE;
 		}
 		return BOOKING_FAILURE;
